@@ -1,0 +1,12 @@
+{ # as oracle
+while test "$UID" -eq 0; do 
+echo -n "Please break with CTRL+C, switch to ORACLE and rerun the script."; 
+read dummy; 
+done;
+
+test -z "$SYSPW" && 
+echo "ERROR: Password is missing from environment. Check the previous script." ||
+dbca -silent -createDatabase -cloneTemplate -gdbName $GDBNAME -sid $SID -templateName $TEMPLATENAME \
+-systemPassword $SYSPW -sysmanPassword $SYSPW -sysPassword $SYSPW \
+-characterSet AL32UTF8 -nationalCharacterSet AL16UTF16
+}

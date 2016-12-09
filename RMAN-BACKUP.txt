@@ -1,0 +1,21 @@
+RMAN-BACKUP:——— 
+sn-ora-0147-sani                
+===========================
+Follow the steps:
+Find the suitable zone after that login into that zones
+After the use the command of CheckRman to find the log file of Rman
+zoneadm list  ( to see the list of host )
+CheckZfssnapbak   ( using this command to see the back log )
+run this script to take the backup:  /root/3rd-party/bin/rman.sh
+To Open the Log file:   vi /ofs-0133-eh_dev-test/root/var/log/zfssnapbak.log
+
+Command Steps:
+CheckRman    (0 running 1 is running)
+
+zoneadm list
+
+CheckZfssnapbak
+
+script >>> /root/3rd-party/bin/rman.sh
+
+vi /ofs-0133-eh_dev-test/root/var/log/zfssnapbak.log
