@@ -1,0 +1,195 @@
+https://ecosphere-staging.censhare.com/en/article/2883646
+
+=================================================================
+1. What is SSL and what are Certificates?
+
+The Secure Socket Layer protocol was created by Netscape to ensure secure transactions between web servers and browsers. 
+SSL is a global standard security technology that enables encrypted communication between a website and an internet browser 
+using 256-bit encryption and 2048-bit root keys.
+The protocol uses a third party, a Certificate Authority (CA), to identify one end or both 
+end of the transactions. 
+
+4. a) With self signed certificate 
+
+Step 1: Build The KeyStore Explorer 5.2 
+
+
+Building a Java keyStore is the first step in configuring your enterprise server to use your own CA-signed SSL certificate. 
+If you have an existing private key and corresponding X.509 certificate (referred to collectively as key materials), 
+you can reuse them. You can also start from scratch, creating new key materials as needed. 
+The steps are different, depending on what existing key materials you have:
+
+Building A Keystore Without Existing Key Materials
+
+NOTE :-  Keypass and Storepass Parameters
+
+You must use the same password for the keystore and the private key. You may use any string you wish for these parameters,
+but they must both be set to the same value.
+
+
+STEP 2 :-
+
+Follow this set of steps if you have no private keys or certificates from a CA and need to create them from scratch.
+
+1. Start KeyStore Explorer.
+2. Choose Create a new KeyStore. 
+3. From New KeyStore Type, choose JKS, then click OK.
+4. Select Tools > Generate Key Pair.
+5. In Generate Key Pair, choose the follo
+
+
+
+wing algorithm selection options: 
+a) RSA
+b) Key Size: 4096
+
+6. Click OK. ( Generating Key Pair dialog appears, then we can provide the valdity Period and version - 3 )
+7. From Generate Key Pair Certificate, click the Edit name icon KeyStore Explorer Edit name icon.
+8. Fill in the fields in the Name dialog:
+For the Common Name (CN) use the Fully Qualified Domain Name (FQDN) of your server. For example: itind-kur-partner-vm
+
+9. Click OK.
+10. In Generate Key Pair Certificate, click OK.
+11. In New Key Pair Entry Alias, enter an alias for the key pair.
+ 			"The alias is pre-set to the CN set in the Name dialog. "
+12. Click OK.
+13. In New Key Pair Entry Password, enter a password, and click OK.
+​			The Generate Key Pair dialog displays "Key Pair Generation Successful".
+
+Note: Key Pair Entry Password
+"Save this password, and use it as the password for the entire keystore in step 15 below."
+
+14. Click OK.
+		"The new key pair is displayed in the KeyStore Explorer window.'"
+		
+15. From the KeyStore Explorer menu, select File > Save.
+		"The Set KeyStore Password dialog appears."
+16. Enter a password for the keystore. This password must be the same as the password for the key pair generated in step 13 above.
+17. Click OK.
+		"The Save KeyStore As dialog appears."
+18. Enter the name of the keystore.
+		"This format is suggested for easy identification of your keystores: fqdn_domain_com.jks"
+19. Click Save.
+		"Your keystore file is saved to your computer."
+		
+	Example -> " keystore "
+	
+20. Generate a CSR:
+a) Left-click on the key pair entry.
+KeyStore Explorer Generate CSR submenu then click on Generate CSR
+
+b) Choose Generate CSR.
+	"The Generate CSR dialog appears."
+	
+c) Enter optional values if desired, and click OK.
+		"The CSR Generation Successful dialog appears."
+d) Click OK.
+21. After That we need to Export .pem file 
+22. Click on the Keypair then we get another dialog of PEM export
+		"we need to save the name hostname.pem".
+
+23. Now we will use the Keychain Access for store the password and Details
+
+24. Put the "hostname.pem" into the Login (keychains) category (Certificates )
+25. Double Click on the name of key then select self signed root certificate
+		" It means This certificate is marked as trusted for this account"
+		
+========== These files you will get after Generating Keys============
+		
+-rw-r--r--    1 kur  staff       1314 May 24 11:11 itind-kur-partner-vm.pem
+-rw-r--r--    1 kur  staff       1314 May 24 11:02 itind_kur_partner_vm.cer
+-rw-r--r--    1 kur  staff       1059 May 24 11:03 itind_kur_partner_vm.csr
+-rw-r--r--    1 kur  staff       2297 May 24 11:01 keystore
+
+STEP 3:----
+
+Now you need to send the keystore file to the Censhare Server
+
+kur:~ kur$ scp keystore root@10.142.0.105:/opt/corpus/cscs/app/config
+
+STEP 4:----
+
+a) Manually changes:-
+Please go to this file and make some changes
+
+[root@itind-kur-partner-vm ~]# vi /opt/corpus/cscs/app/config/server.master.xml
+
+
+108     <sysproperty key="javax.net.ssl.keyStore" value="@current.runtime.dir@config/keystore" enabled="true"/>
+109     <sysproperty key="javax.net.ssl.keyStorePassword" value="123456" enabled="true"/>
+
+b) Login Censhare Admin-client
+
+1) Go to Configuration --> Server
+2) Double click on ( General [Server=master, Roles=*])
+3) Provide the password of Keystore.
+
+
+STEP 5:-
+
+Finally we need to restart the censhare server.
+
+[corpus@itind-kur-partner-vm ~]#  censhare.rc restart
+
+STEP 6:-
+
+After That, we need to login on censhare client 5.5.0 
+
+And make Hosts.xml entry for that with the hostname ( Only with itind-kur-partner-vm )
+
+
+=======
+
+<!--rohitvm-test-->
+    <host compressionlevel="3" url="frmis://itind-kur-partner-vm/corpus.RMIServerSSL" name="Vcenter-test" authentication-method="">
+      <proxy use="0"/>
+      <censhare-vfs use="1" hidden="1"/>
+    </host>
+
+==========
+
+Note: It will not work if run with the IP instead of Hostname.
+
+
+Errors:----
+
+
+
+
+
+
+
+
+		
+
+		
+		
+		
+		
+
+===============================================================
+
+
+link of google:
+
+https://support.code42.com/Administrator/4/Configuring/Using_KeyStore_Explorer_to_Install_An_SSL_Certificate
+
+
+step 2:--
+
+
+we need to change the password of keystore:
+
+108     <sysproperty key="javax.net.ssl.keyStore" value="@current.runtime.dir@config/keystore" enabled="true"/>
+109     <sysproperty key="javax.net.ssl.keyStorePassword" value="123456" enabled="true"/>
+
+
+
+Step 3:  
+
+we need to check keystore keys
+
+-bash-4.1$ keytool -keystore keystore -list -v
+
+-bash-4.1$ keytool -keystore keystore -list
+

@@ -1,0 +1,228 @@
+https://ecosphere.censhare.com/en/documentation/operation/installation-und-update-service/article/2372677
+
+kur:csi kur$ if [ `mount|grep /Volumes/Files>/dev/null;echo $?` == 0 ];then echo -n "enter the censhare user name [corpus] : ";read user;[ -z $user ]&&user=corpus;while echo -n "enter the customer servername : ";do read server;[ -z $server ]||break;done;PS3tmp=$PS3;PS3="select the Version : ";echo -n "enter the server SSH port [22] : ";read port;[ -z $port ]&&port=22;select v in `/bin/ls -l /Volumes/Files/censhare/censhare-Server|awk '{print $10}'|sort -r`;do [ -z $v ]||echo -e "\n\ncheck output and execute it:\n\nfor i in Server WebClient OnlineChannel WebService;do scp -P$port /Volumes/Files/censhare/censhare-\$i/$v/censhare-\$i-$v* $user@$server:;done";break;done;PS3=$PS3tmp;else echo -e "\n\n\n"YOU MUST MOUNT FILES FROM censhare FILESERVER\ \!\!\!;fi
+enter the censhare user name [corpus] :
+enter the customer servername : 10.142.0.105
+enter the server SSH port [22] :
+1) -
+select the Version : 5
+
+===
+kur:csi kur$ for i in Server WebClient OnlineChannel WebService;do scp -P22 /Volumes/Files/censhare/censhare-$i/v5.4.5/censhare-$i-v5.4.5* corpus@10.142.0.105:;done
+
+
+=====
+
+After that all scripts will run on corpus server
+
+corpus@itind-kur-partner-vm:~>
+
+
+=====================================
+
+Set RANDOM PASSWORD:____
+
+
+
+RandomPassword () {
+    < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+}
+# function to md5 digest a password
+ChangeCSSystemPassword () {
+    syspw=$(RandomPassword)
+    system_digest=$(echo -n "$syspw" | md5sum | cut -f 1 -d " ")
+    echo "Please Note!"
+    echo "Password system:         $syspw"
+}
+# change system user password
+test -d $HOME/cscs/app/config || mkdir -p $HOME/cscs/app/config && {
+    ChangeCSSystemPassword
+    sed -e "s/ name=\"master\"/ name=\"$CSS_ID\"/g" \
+        -e "s/master-server-name=\"master\"/master-server-name=\"$CSS_ID\"/g" \
+        -e "s/password-digest=\"54b53072540eeeb8f8e9343e71f28176\"/password-digest=\"$system_digest\"/g" \
+        $HOME/css/app/config/server.xml > $HOME/cscs/app/config/server.$CSS_ID.xml
+    }
+    
+    
+    
+    ========================
+    
+    do initial customization:
+textpop-up
+  ff=$(find . -name "*.xml" | sort)
+  vi $ff
+  
+  
+  
+  changes and modification of files ( comment the these 2 lines )
+  
+      76     <!-- uncomment one of the alternatives below and copy to current -->
+  
+  1.  77     <!-- @jvm1.start current: machines with 8 or more threads 64Bit Java, RAM greater-equal 4GB -->
+  2.  90     <-- @jvm1.end@ -->
+  
+  
+  
+  Remove the comments ( looks like this )
+  
+  128     <!-- @jvm.replace.start@ current: defaults to machines 1-3 CPUs, poor RAM 
+  
+  139      @jvm.replace.end@ -->
+  
+  
+  if you want see the server configuration :
+  
+  #vi $ff
+     press :n   is used to see all files inside the file......
+  
+  Note : main path of censhare database config file : 
+  
+  corpus@itind-kur-partner-vm:~> vi cscs/app/services/database/config.master.xml
+
+   
+   then you can see the server configuration: ( only for check no changes is there ) 
+   
+   path is : ./app/services/database/config.master.xml
+   
+   ====
+   <xml-info
+      title="Server configuration"
+      description="&lt;html&gt;Global censhare Server configuration.&lt;br&gt;&lt;b&gt;Changes will take affect only after a server restart!&lt;/b&gt;&lt;/html&gt;"
+      version="1">
+      <property-resources>
+        <base url="file:module"/>
+        <base url="file:../common/global"/>
+      </property-resources>
+    </xml-info>
+    ====
+    
+    
+    =======>Then changes the database connections just like :===========>
+    
+     16   <connection
+     17       name="corpus"
+     18       connection-url="jdbc:oracle:thin:@10.142.0.105:1521:XE"
+  
+  
+  =========
+  
+  
+  Then check the DATABASE:--------
+  
+  corpus@itind-kur-partner-vm:~> CheckJDBC.sh
+Starting JDBC check
+using JDBC jar file: 'app/common/lib/ojdbc6-v11.2.0.2.4.jar'
+java -Djava.security.egd=file:///dev/urandom -cp bin/censhare-launcher.jar:app/common/lib/ojdbc6-v11.2.0.2.4.jar com.censhare.server.client.CheckJDBC master
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver init
+INFO: Using default config dir: /opt/corpus/censhare-Server-v5.4.5-b5418/censhare-Server/app
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver init
+INFO: Using custom config dir : /opt/corpus/censhare-Server-v5.4.5-b5418/censhare-Custom/censhare-Server/app
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver init
+INFO: Using runtime config dir: /opt/corpus/work/runtime.master
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver refresh
+INFO: Refreshing last changes
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver scanConfig
+INFO: scanned file:///opt/corpus/censhare-Server-v5.4.5-b5418/censhare-Server/app/ in 102ms
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver scanConfig
+INFO: scanned file:///opt/corpus/censhare-Server-v5.4.5-b5418/censhare-Custom/censhare-Server/app/ in 2ms
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver scanConfig
+INFO: scanned file:///opt/corpus/work/runtime.master/ in 31ms
+May 19, 2016 12:11:11 PM com.censhare.server.config.ConfigResolver refresh
+INFO: Refreshing configuration for url: file:services/database/
+May 19, 2016 12:11:12 PM com.censhare.server.config.ConfigResolver refreshFromDefaultOrCustomScanner
+INFO: Found 9 config changes.
+Connecting to database with user 'corpus' and url: jdbc:oracle:thin:@10.142.0.105:1521:XE
+Connected!
+SQL test successful. Found 5 parties.
+database.version: 5.1.2.2082
+successfully done.
+
+
+===========================================================================================================================================================
+
+copying database files into ~/css/database :
+
+corpus@itind-kur-partner-vm:~> cd ~/css/database/
+corpus@itind-kur-partner-vm:~/css/database> scp create-* drop-* oracle@10.142.0.105:
+  
+corpus@itind-kur-partner-vm:~/css/database> ll
+total 260K
+-rw-r--r--. 1 corpus corpus 8.9K Apr 29 13:11 add-missing-languages.sql
+-rw-r--r--. 1 corpus corpus 189K Apr 29 13:11 create-db.sql
+-rw-r--r--. 1 corpus corpus  834 Apr 29 13:11 create-user-rac.sql
+-rw-r--r--. 1 corpus corpus  888 Apr 29 13:11 create-user.sql
+-rw-r--r--. 1 corpus corpus  547 Apr 29 13:11 create-user-template.sql
+-rw-r--r--. 1 corpus corpus  13K Apr 29 13:11 drop-db.sql
+-rw-r--r--. 1 corpus corpus  207 Apr 29 13:11 drop-user.sql
+-rw-r--r--. 1 corpus corpus  16K Apr 29 13:11 synonym-db.sql
+drwxr-xr-x. 2 corpus corpus 4.0K May 19 11:02 update/
+drwxr-xr-x. 2 corpus corpus 4.0K May 19 11:02 xsl/
+
+=========================
+
+setup db and user:
+
+First, we should check and create some links:
+
+first:
+
+-bash-4.1$ ln -s XE corpus
+
+ see:
+ 
+ -bash-4.1$ cd oradata/
+-bash-4.1$ ll
+total 4
+lrwxrwxrwx. 1 oracle dba    2 May 19 12:22 corpus -> XE
+drwxr-xr-x. 2 oracle dba 4096 May 19 12:29 XE
+
+this is the home profile of oracle:
+-bash-4.1$ pwd
+/u01/app/oracle
+
+then you can run 
+
+-bash-4.1$ sqlplus / as sysdba
+
+
+Database Installation:
+  Step 1:-
+  
+After that sql commands run :
+
+@drop-user
+@create-user
+@create-db
+
+
+Step 2---->
+
+-bash-4.1$ ln -s /u01/app/oracle/oradata
+
+
+After that,
+
+Create folder for PID file
+root@itind-kur-partner-vm:~> mkdir -p /var/run/censhare && chown corpus:corpus /var/run/censhare
+
+corpus@itind-kur-partner-vm:~> censhare.rc start
+
+
+After that, if you want to change the password of censhare.....so you can use the script 
+
+"set random passwords for bootstrap users"
+
+
+
+
+
+
+  
+  Note: keytool -list -keystore keystore    ( it is showing the keys and license of all the clients like CA certificate )
+  More info :-  https://ecosphere.censhare.com/en/documentation/operation/configuration-services/article/2521107
+  
+  
+  
+  
+  
+  

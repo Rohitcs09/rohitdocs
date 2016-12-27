@@ -1,0 +1,348 @@
+Tech-admin day 1   
+
+=========================================================================================
+censhare installation
+
+Link:---  https://ecosphere.censhare.com/en/documentation/operation/installation-und-update-service/article/2371814
+
+
+=====================ssh connectivity--------
+====push================
+==============variables settings and environment settings=========
+
+
+note : create soft link  for csi ( censhare info) before running push script.......
+
+# ln -s itservices/environment csi
+
+user=corpus cs=10.142.0.105 ---> change the IP of the server
+ cd ~/csi  #(If problem with this path then use your local git "$git-home$/itservices/environment/"path)#
+  scp alias.corpus $user@$cs:.alias
+  ssh $user@$cs "cat >>.ssh/authorized_keys" < authorized_keys.proj
+  ssh $user@$cs "test -f .vimrc || cat >.vimrc" < vimrc
+  ssh $user@$cs "test \$(uname) = SunOS && cat >>.bash_profile" <bashrc.addon
+  
+  
+  =================
+  
+  
+  before run this create the key for oracle user also
+  
+  # su - oracle 
+  
+#ssh-keygen -t rsa
+  
+  =============Ssh connectivity between oracle and corpus user:=========
+  
+root:~# \
+  eval "cat ~$CORPUS_USER/.ssh/id_rsa.pub >>~oracle/.ssh/authorized_keys"
+  eval "cat ~oracle/.ssh/id_rsa.pub >>~$CORPUS_USER/.ssh/authorized_keys"
+  
+  
+  ================= set java version===========
+  
+  corpus@itind-kur-partner-vm:~> JV=8u92
+corpus@itind-kur-partner-vm:~> JVV=1.8.0._92
+corpus@itind-kur-partner-vm:~> FIP=/opt/corpus
+corpus@itind-kur-partner-vm:~> logout
+[root@itind-kur-partner-vm ~]# sc
+corpus@itind-kur-partner-vm:~>
+corpus@itind-kur-partner-vm:~>
+corpus@itind-kur-partner-vm:~> TOOLS_HOME=$HOME/toold; JAVA_HOME=$TOOLS_HOME/java
+corpus@itind-kur-partner-vm:~> test ! -d $TOOL_HOME && mkdir -p $TOOLS_HOME
+corpus@itind-kur-partner-vm:~>
+
+========= download at local through scp ============
+
+scp /Volumes/Files/censhare/censhare-3rdParty/jdk/jdk-8u92-linux-x64.tar.gz corpus@10.142.0.105:/opt/corpus/tools
+
+========
+kur:csi kur$ scp /Volumes/Files/censhare/censhare-3rdParty/jdk/jdk-8u92-linux-x64.tar.gz corpus@10.142.0.105:/opt/corpus/tools
+corpus@10.142.0.105's password:
+jdk-8u92-linux-x64.tar.gz                                                                                                                       100%  173MB   3.6MB/s   00:48
+kur:csi kur$
+=========
+
+
+then create the soft link of java--------
+
+corpus@itind-kur-partner-vm:~/tools> ps -ef | grep java
+corpus    7179  7132  0 10:09 pts/0    00:00:00 grep java
+
+corpus@itind-kur-partner-vm:~/tools> ln -s jdk1.8.0_92/ java
+corpus@itind-kur-partner-vm:~/tools> ll
+total 173M
+lrwxrwxrwx. 1 corpus corpus   12 May 19 10:11 java -> jdk1.8.0_92//
+drwxr-xr-x. 8 corpus corpus 4.0K Apr  1 06:20 jdk1.8.0_92/
+-rwx------. 1 corpus corpus 173M May 19 10:02 jdk-8u92-linux-x64.tar.gz*
+
+=================================================================================
+
+
+
+USE Script========
+
+
+========> "  JAVA Variables:
+
+set corpus home. For example " --------->
+
+
+
+
+corpus@itind-kur-partner-vm:~/tools> CORPUS_HOME=/opt/corpus
+
+
+
+corpus@itind-kur-partner-vm:~/tools> grep '^[^#]*\<JAVA_HOME=' $CORPUS_HOME/.bash_profile >/dev/null || {
+>     while test -z "$JAVA_HOME"; do
+>        set +x
+>        echo -n "Wert fuer JAVA_HOME-Variable: "; read JAVA_HOME
+>        set -x
+>     done
+>     cat <<EOF >>$CORPUS_HOME/.bash_profile
+> JAVA_HOME="$JAVA_HOME";       export JAVA_HOME
+> JAVA_ROOT="$JAVA_HOME";       export JAVA_ROOT
+> JAVA_BINDIR="$JAVA_HOME/bin"; export JAVA_BINDIR
+> JAVA_BIN="$JAVA_HOME/bin";      export JAVA_BIN
+> JDK_HOME="$JAVA_HOME";        export JDK_HOME
+> JRE_HOME="$JAVA_HOME/jre";    export JRE_HOME
+> s=":\$PATH:"; p=\$JAVA_BIN                # remove and prepend \$JAVA_BIN in \$PATH
+> test -z "\${s%%*:\$p:*}" && PATH="\${PATH%%:\$p:*}:\${PATH##*:\$p:}"; PATH="\$p:\$PATH"
+> EOF
+>   }
+Wert fuer JAVA_HOME-Variable:
++ test -z ''
++ set +x
+Wert fuer JAVA_HOME-Variable: /opt/corpus/tools/java
++ test -z /opt/corpus/tools/java
++ cat
+++ printf '\033]0;%s@%s:%s\007' corpus itind-kur-partner-vm '~/tools'
+corpus@itind-kur-partner-vm:~/tools>
+++ printf '\033]0;%s@%s:%s\007' corpus itind-kur-partner-vm '~/tools'
+corpus@itind-kur-partner-vm:~/tools> source ~/.bash_
+.bash_history  .bash_logout   .bash_profile
+corpus@itind-kur-partner-vm:~/tools> source ~/.bash_profile
++ source /opt/corpus/.bash_profile
+++ '[' -f /opt/corpus/.bashrc ']'
+++ . /opt/corpus/.bashrc
++++ '[' -f /etc/bashrc ']'
++++ . /etc/bashrc
+++++ '[' '\u@\h:\w> ' ']'
+++++ '[' -z 'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"' ']'
+++++ shopt -s checkwinsize
+++++ '[' '\u@\h:\w> ' = '\s-\v\$ ' ']'
+++++ shopt -q login_shell
+++ PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin
+++ export PATH
+++ test -f /opt/corpus/.alias
+++ . /opt/corpus/.alias
++++ alias 'wl=cd /opt/corpus/work/logs'
++++ alias 'lcl=less -S /opt/corpus/work/logs/server-0.0.log'
+++++ ls -CF --color=auto -1tr '/opt/corpus/work/logs/gc.log*'
+++++ tail -1
++++ alias 'lgl=less -S '
++++ alias 'lll=less -S /opt/corpus/work/logs/startup.log'
++++ alias 'ljl=less -S /opt/corpus/work/logs/stdout.log'
++++ alias 'lsl=less -S /opt/corpus/.censhare/v4/service-client-0.0.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl1=less -S /opt/corpus/work/logs/server-0.1.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl2=less -S /opt/corpus/work/logs/server-0.2.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl3=less -S /opt/corpus/work/logs/server-0.3.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl4=less -S /opt/corpus/work/logs/server-0.4.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl5=less -S /opt/corpus/work/logs/server-0.5.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl6=less -S /opt/corpus/work/logs/server-0.6.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl7=less -S /opt/corpus/work/logs/server-0.7.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl8=less -S /opt/corpus/work/logs/server-0.8.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl9=less -S /opt/corpus/work/logs/server-0.9.log'
++++ alias 'cssjstack=set -- $(jps|grep -i CenShareServer); pid=$1; cmd="jstack $pid > ~/work/logs/jstack.censhareServer.$HOSTNAME.txt"; echo "Executing: $cmd"; eval $cmd'
++++ alias 'cssjmap=set -- $(jps|grep -i CenShareServer); pid=$1; cmd="jmap -dump:format=b,file=jmap.censhareServer.$HOSTNAME.heap.bin -J-d64 -J-Xmx1536m $pid"; echo "#### WARNING: Please ensure that there is enough disk space AND may open a second terminal with top to avoid a connection interrupt. ####"; echo "Executing: $cmd"; echo; eval $cmd'
++++ alias 'csscheck-rebuild-index=grep "admin.maintenance.rebuild-indexes completed all" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-update-db-stats=grep "admin.maintenance.update-db-statistics completed all" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-mark-deletion=grep "asset_deletion.mark-deletion: Marking" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-do-deletion=grep "asset_deletion.do-deletion:" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-storage-deletion=grep "asset_deletion.storage-deletion: Successfully" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-cl=test -e ~/css/app/shelladmin/check-logins.sab && ~/bin/AdminClient.sh -b check-logins'
++++ alias 'csscreate-db-schema-doc=cd ~/css && bin/build.sh doc && cd ~/css/doc/database && ls -l'
++++ alias 'csscreate-db-schema.patch-doc=cd ~/css && bin/build.sh -Dserver.name= custom.db-schema.doc && cd ~/css/doc/database && ls -l'
+++++ date +%Y_%m_%d
++++ alias 'ltl=less -S /opt/corpus/jetty/logs/2016_05_19.stderrout.log'
++++ alias 'lwl=less -S /opt/corpus/jetty/logs/webclient-0.0.log'
++++ alias 'lsl=less -S /opt/corpus/jetty/logs/webservice-0.0.log'
++++ LS_OPTIONS=--color=auto
++++ alias 'l=ls -lAFh'
++++ alias 'll=ls -lhF'
++++ alias 'ls=ls -CF --color=auto'
++++ alias '..=cd ..'
++++ alias cls=clear
+++ PS1='\u@\h:\w> '
+++ expr :/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin: : '.*:/opt/corpus/bin:'
+++ s=:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:
+++ p=/opt/corpus/localbin
+++ test -n ''
+++ s=:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:
+++ p=/usr/local/bin
+++ test -n ''
+++ HISTTIMEFORMAT='%Y.%m.%d-%T :: '
+++ HISTSIZE=5000
+++ HISTFILESIZE=5000
+++ JAVA_HOME=/opt/corpus/tools/java
+++ export JAVA_HOME
+++ JAVA_ROOT=/opt/corpus/tools/java
+++ export JAVA_ROOT
+++ JAVA_BINDIR=/opt/corpus/tools/java/bin
+++ export JAVA_BINDIR
+++ JAVA_BIN=/opt/corpus/tools/java/bin
+++ export JAVA_BIN
+++ JDK_HOME=/opt/corpus/tools/java
+++ export JDK_HOME
+++ JRE_HOME=/opt/corpus/tools/java/jre
+++ export JRE_HOME
+++ s=:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:
+++ p=/opt/corpus/tools/java/bin
+++ test -z :/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:
+++ PATH=/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin
+++ printf '\033]0;%s@%s:%s\007' corpus itind-kur-partner-vm '~/tools'
+corpus@itind-kur-partner-vm:~/tools> source ~/.bash_profile
++ source /opt/corpus/.bash_profile
+++ '[' -f /opt/corpus/.bashrc ']'
+++ . /opt/corpus/.bashrc
++++ '[' -f /etc/bashrc ']'
++++ . /etc/bashrc
+++++ '[' '\u@\h:\w> ' ']'
+++++ '[' -z 'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"' ']'
+++++ shopt -s checkwinsize
+++++ '[' '\u@\h:\w> ' = '\s-\v\$ ' ']'
+++++ shopt -q login_shell
+++ PATH=/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin
+++ export PATH
+++ test -f /opt/corpus/.alias
+++ . /opt/corpus/.alias
++++ alias 'wl=cd /opt/corpus/work/logs'
++++ alias 'lcl=less -S /opt/corpus/work/logs/server-0.0.log'
+++++ ls -CF --color=auto -1tr '/opt/corpus/work/logs/gc.log*'
+++++ tail -1
++++ alias 'lgl=less -S '
++++ alias 'lll=less -S /opt/corpus/work/logs/startup.log'
++++ alias 'ljl=less -S /opt/corpus/work/logs/stdout.log'
++++ alias 'lsl=less -S /opt/corpus/.censhare/v4/service-client-0.0.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl1=less -S /opt/corpus/work/logs/server-0.1.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl2=less -S /opt/corpus/work/logs/server-0.2.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl3=less -S /opt/corpus/work/logs/server-0.3.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl4=less -S /opt/corpus/work/logs/server-0.4.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl5=less -S /opt/corpus/work/logs/server-0.5.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl6=less -S /opt/corpus/work/logs/server-0.6.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl7=less -S /opt/corpus/work/logs/server-0.7.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl8=less -S /opt/corpus/work/logs/server-0.8.log'
++++ for i in 1 2 3 4 5 6 7 8 9
++++ alias 'lcl9=less -S /opt/corpus/work/logs/server-0.9.log'
++++ alias 'cssjstack=set -- $(jps|grep -i CenShareServer); pid=$1; cmd="jstack $pid > ~/work/logs/jstack.censhareServer.$HOSTNAME.txt"; echo "Executing: $cmd"; eval $cmd'
++++ alias 'cssjmap=set -- $(jps|grep -i CenShareServer); pid=$1; cmd="jmap -dump:format=b,file=jmap.censhareServer.$HOSTNAME.heap.bin -J-d64 -J-Xmx1536m $pid"; echo "#### WARNING: Please ensure that there is enough disk space AND may open a second terminal with top to avoid a connection interrupt. ####"; echo "Executing: $cmd"; echo; eval $cmd'
++++ alias 'csscheck-rebuild-index=grep "admin.maintenance.rebuild-indexes completed all" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-update-db-stats=grep "admin.maintenance.update-db-statistics completed all" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-mark-deletion=grep "asset_deletion.mark-deletion: Marking" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-do-deletion=grep "asset_deletion.do-deletion:" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-storage-deletion=grep "asset_deletion.storage-deletion: Successfully" ~/work/logs/server-0.*.log|sort -t : -k2'
++++ alias 'csscheck-cl=test -e ~/css/app/shelladmin/check-logins.sab && ~/bin/AdminClient.sh -b check-logins'
++++ alias 'csscreate-db-schema-doc=cd ~/css && bin/build.sh doc && cd ~/css/doc/database && ls -l'
++++ alias 'csscreate-db-schema.patch-doc=cd ~/css && bin/build.sh -Dserver.name= custom.db-schema.doc && cd ~/css/doc/database && ls -l'
+++++ date +%Y_%m_%d
++++ alias 'ltl=less -S /opt/corpus/jetty/logs/2016_05_19.stderrout.log'
++++ alias 'lwl=less -S /opt/corpus/jetty/logs/webclient-0.0.log'
++++ alias 'lsl=less -S /opt/corpus/jetty/logs/webservice-0.0.log'
++++ LS_OPTIONS=--color=auto
++++ alias 'l=ls -lAFh'
++++ alias 'll=ls -lhF'
++++ alias 'ls=ls -CF --color=auto'
++++ alias '..=cd ..'
++++ alias cls=clear
+++ PS1='\u@\h:\w> '
+++ expr :/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin: : '.*:/opt/corpus/bin:'
+++ s=:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin:
+++ p=/opt/corpus/localbin
+++ test -n ''
+++ s=:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin:
+++ p=/usr/local/bin
+++ test -n ''
+++ HISTTIMEFORMAT='%Y.%m.%d-%T :: '
+++ HISTSIZE=5000
+++ HISTFILESIZE=5000
+++ JAVA_HOME=/opt/corpus/tools/java
+++ export JAVA_HOME
+++ JAVA_ROOT=/opt/corpus/tools/java
+++ export JAVA_ROOT
+++ JAVA_BINDIR=/opt/corpus/tools/java/bin
+++ export JAVA_BINDIR
+++ JAVA_BIN=/opt/corpus/tools/java/bin
+++ export JAVA_BIN
+++ JDK_HOME=/opt/corpus/tools/java
+++ export JDK_HOME
+++ JRE_HOME=/opt/corpus/tools/java/jre
+++ export JRE_HOME
+++ s=:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin:
+++ p=/opt/corpus/tools/java/bin
+++ test -z ''
+++ PATH=/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin
+++ PATH=/opt/corpus/tools/java/bin:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin:/opt/corpus/tools/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/corpus/bin:/opt/corpus/localbin:/opt/corpus/bin:/opt/corpus/bin
+++ printf '\033]0;%s@%s:%s\007' corpus itind-kur-partner-vm '~/tools'
+corpus@itind-kur-partner-vm:~/tools> set +x
++ set +x
+
+
+=========================================================
+
+censhare 3rd Party Tools (gs,exiftool, ImagMagick)
+
+prepare directory
+
+# test -d /opt/corpus/tools/install || mkdir -p /opt/corpus/tools/install
+
+
+After that scp of install directory.....
+
+kur:csi kur$ scp /Volumes/Files/censhare/censhare-3rdParty/tools/redhat-x86/* corpus@10.142.0.105:tools/
+
+
+Then all the files and directory will come on the serevr so After that run README.txt file------------
+
+corpus@itind-kur-partner-vm:~/tools> ./README.txt
+extracting archive: ImageMagick-6.8.3-3.tar.gz
+extracting archive: dcraw.tar.gz
+extracting archive: exiftool-9.20.tar.gz
+extracting archive: ghostscript-9.07.tar.gz
+extracting archive: ghostscript-fonts.tar.gz
+extracting archive: wkhtmltoimage-0.10.0-rc2.tar.gz
+ln -s ImageMagick-6.8.3-3 imagemagick
+ln -s exiftool-9.20 exiftool
+ln -s ghostscript-9.07 ghostscript
+ln -s wkhtmltoimage-0.10.0-rc2 wkhtmltoimage
+done.
+
+
+
+
+
+
+
+
+
+
+
+
+

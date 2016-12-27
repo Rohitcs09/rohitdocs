@@ -1,0 +1,43 @@
+Censhare Admin-Client login task
+=========================================
+
+1. Create Remote Server
+name is : server 2
+
+step 1 
+Master data-->Apllications server  ( Put the name of second server)
+
+step 2
+configuration-->server-->General---> ( here update the server)
+go to -->General server configuration  ( update it 	)
+go to launcher and select blank to update the setting for all server
+
+step 3
+
+configuration--> service--remote server  ---- from snapshot
+
+And service should be enabled ( Right Check )
+
+put the configurtaion
+
+===============================================================================
+
+Now configuration of database  for server2 / remote server ( check from snapshot )
+1.database
+2.database query
+3.database object
+
+
+===============================================================================
+
+Now going to Master data
+
+1. create new domain for remote server
+2. create new file system for remote server
+3. then go to services-->file system--->configuration  ( select remote server and file system )
+
+===============================
+
+change the CSSID
+
+34 CSS_ID=server2; export CSS_ID            # define censhare server name

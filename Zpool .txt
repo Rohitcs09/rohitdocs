@@ -1,0 +1,43 @@
+Taking the backup of zpool backup
+
+3rd-party/bin/zfssnapbak.sh -f 3rd-party/etc/zfssnapbak/ora-0133-eh_dev-test.rc
+
+
+
+
+Taking Rename Backup of ZFS FILE SYSTEM of POOL….
+
+zfs rename ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool-deleteafter04-mar-2016
+
+if getting the problem of backup……means file system is busy
+
+then check the the list of running file system
+
+ps awwx | grep zfs
+
+after the kill the process of running file system
+
+kill -9 14962 14970 25117
+
+then running again ……
+
+zfs rename ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool-deleteafter04-mar-2016
+
+Again we are getting the error…like 
+
+“”””””””"cannot open 'ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool': filesystem does not exist’’’’’’’’’’’’’’’’’’’’’
+
+
+Again check………
+
+#zfs list ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool
+
+
+getting same error…….
+
+‘’’’’’’’’’’’’''cannot open 'ora-0133-eh_dev-test_backup/ora-0133-eh_dev-test_rpool': filesystem does not exist’’’’’’’’’’’’’’’’’’'
+
+
+then we have to take the backup of manually 
+
+# 3rd-party/bin/zfssnapbak.sh -f 3rd-party/etc/zfssnapbak/ora-0133-eh_dev-test.rc

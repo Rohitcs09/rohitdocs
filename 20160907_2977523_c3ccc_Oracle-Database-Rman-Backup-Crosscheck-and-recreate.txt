@@ -1,0 +1,182 @@
+root@muc1-sun002-srv:~# zpool import muc1-ora_backup
+root@muc1-sun002-srv:~# zfs mount !$/backup_rman
+zfs mount muc1-ora_backup/backup_rman
+cannot mount 'muc1-ora_backup/backup_rman': filesystem already mounted
+
+
+root@muc1-sun002-srv:~# zpool list
+NAME              SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+muc1-ora_backup   976G   707G   269G  72%  1.00x  ONLINE  -
+muc1-ora_rpool   1,99T  45,4G  1,95T   2%  1.00x  ONLINE  -
+rpool             278G   134G   144G  48%  1.00x  ONLINE  -
+root@muc1-sun002-srv:~# zfs list -r muc1-ora_backup
+NAME                                                             USED  AVAIL  REFER  MOUNTPOINT
+muc1-ora_backup                                                  707G   254G    32K  /muc1-ora_backup
+muc1-ora_backup/backup_rman                                      615G   254G   615G  /zonedata/muc1-ora/root/backup_rman
+...
+
+
+
+
+
+oracle@muc1-ora:~$ rman
+
+Recovery Manager: Release 11.2.0.3.0 - Production on Wed Sep 7 05:01:19 2016
+
+Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.
+
+RMAN> connect target
+
+connected to target database: CORPUS (DBID=667631278)
+
+RMAN> crosscheck backup;
+
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=226 device type=DISK
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921727834_s13072_s1 RECID=13177 STAMP=921727838
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921729150_s13073_s1 RECID=13178 STAMP=921729150
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpusc-667631278-20160905-01 RECID=13179 STAMP=921729151
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814208_s13076_s1 RECID=13180 STAMP=921814208
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpusc-667631278-20160906-00 RECID=13181 STAMP=921814253
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814256_s13079_s1 RECID=13183 STAMP=921814256
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814257_s13080_s1 RECID=13184 STAMP=921814259
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814922_s13081_s1 RECID=13185 STAMP=921814922
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921815548_s13082_s1 RECID=13186 STAMP=921815548
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpusc-667631278-20160906-01 RECID=13187 STAMP=921815549
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900608_s13084_s1 RECID=13188 STAMP=921900608
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpusc-667631278-20160907-00 RECID=13189 STAMP=921900643
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900645_s13086_s1 RECID=13190 STAMP=921900645
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900646_s13087_s1 RECID=13191 STAMP=921900646
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900647_s13088_s1 RECID=13192 STAMP=921900649
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921901322_s13089_s1 RECID=13193 STAMP=921901322
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpus-667631278-ora-df921901948_s13090_s1 RECID=13194 STAMP=921901948
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/backup_rman/corpusc-667631278-20160907-01 RECID=13195 STAMP=921901949
+Crosschecked 18 objects
+
+
+RMAN> delete expired backup;
+
+using channel ORA_DISK_1
+
+List of Backup Pieces
+BP Key  BS Key  Pc# Cp# Status      Device Type Piece Name
+------- ------- --- --- ----------- ----------- ----------
+13177   13177   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921727834_s13072_s1
+13178   13178   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921729150_s13073_s1
+13179   13179   1   1   EXPIRED     DISK        /backup_rman/corpusc-667631278-20160905-01
+13180   13180   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921814208_s13076_s1
+13181   13181   1   1   EXPIRED     DISK        /backup_rman/corpusc-667631278-20160906-00
+13183   13183   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921814256_s13079_s1
+13184   13184   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921814257_s13080_s1
+13185   13185   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921814922_s13081_s1
+13186   13186   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921815548_s13082_s1
+13187   13187   1   1   EXPIRED     DISK        /backup_rman/corpusc-667631278-20160906-01
+13188   13188   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921900608_s13084_s1
+13189   13189   1   1   EXPIRED     DISK        /backup_rman/corpusc-667631278-20160907-00
+13190   13190   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921900645_s13086_s1
+13191   13191   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921900646_s13087_s1
+13192   13192   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921900647_s13088_s1
+13193   13193   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921901322_s13089_s1
+13194   13194   1   1   EXPIRED     DISK        /backup_rman/corpus-667631278-ora-df921901948_s13090_s1
+13195   13195   1   1   EXPIRED     DISK        /backup_rman/corpusc-667631278-20160907-01
+
+Do you really want to delete the above objects (enter YES or NO)? yes
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921727834_s13072_s1 RECID=13177 STAMP=921727838
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921729150_s13073_s1 RECID=13178 STAMP=921729150
+deleted backup piece
+backup piece handle=/backup_rman/corpusc-667631278-20160905-01 RECID=13179 STAMP=921729151
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814208_s13076_s1 RECID=13180 STAMP=921814208
+deleted backup piece
+backup piece handle=/backup_rman/corpusc-667631278-20160906-00 RECID=13181 STAMP=921814253
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814256_s13079_s1 RECID=13183 STAMP=921814256
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814257_s13080_s1 RECID=13184 STAMP=921814259
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921814922_s13081_s1 RECID=13185 STAMP=921814922
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921815548_s13082_s1 RECID=13186 STAMP=921815548
+deleted backup piece
+backup piece handle=/backup_rman/corpusc-667631278-20160906-01 RECID=13187 STAMP=921815549
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900608_s13084_s1 RECID=13188 STAMP=921900608
+deleted backup piece
+backup piece handle=/backup_rman/corpusc-667631278-20160907-00 RECID=13189 STAMP=921900643
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900645_s13086_s1 RECID=13190 STAMP=921900645
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900646_s13087_s1 RECID=13191 STAMP=921900646
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921900647_s13088_s1 RECID=13192 STAMP=921900649
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921901322_s13089_s1 RECID=13193 STAMP=921901322
+deleted backup piece
+backup piece handle=/backup_rman/corpus-667631278-ora-df921901948_s13090_s1 RECID=13194 STAMP=921901948
+deleted backup piece
+backup piece handle=/backup_rman/corpusc-667631278-20160907-01 RECID=13195 STAMP=921901949
+Deleted 18 EXPIRED objects
+
+
+root@muc1-sun002-srv:~# zfs snapshot muc1-ora_backup/backup_rman@2977523
+
+oot@muc1-sun002-srv:~# zfs list -rtall muc1-ora_backup/backup_rman
+NAME                                 USED  AVAIL  REFER  MOUNTPOINT
+muc1-ora_backup/backup_rman          615G   254G   615G  /zonedata/muc1-ora/root/backup_rman
+muc1-ora_backup/backup_rman@2977523     0      -   615G  -
+
+root@muc1-sun002-srv:~# rm /zonedata/muc1-ora/root/backup_rman/*
+
+
+
+
+
+root@muc1-sun002-srv:~# /etc/s2s/init.d/rman_backup.sh
+
+root@muc1-sun002-srv:~# zlogin muc1-ora "tail /var/log/backup_*"
+Recovery Manager complete.
++ ec=0
++ type Mail
++ Mail=/usr/bin/mailx
++ test 0 '!=' 0
+++ date +%Y-%m-%d_%H:%M:%S
++ echo '2016-09-07_06:03:08 rman backup finished.'
+2016-09-07_06:03:08 rman backup finished.
+
+
+
+root@muc1-sun002-srv:~# zfs list -rtall muc1-ora_backup/backup_rman
+NAME                                 USED  AVAIL  REFER  MOUNTPOINT
+muc1-ora_backup/backup_rman          628G   241G  12,7G  /zonedata/muc1-ora/root/backup_rman
+muc1-ora_backup/backup_rman@2977523  615G      -   615G  -
+
+root@muc1-sun002-srv:~# zfs destroy muc1-ora_backup/backup_rman@2977523
+
+root@muc1-sun002-srv:~# zfs list -rtall muc1-ora_backup/backup_rman
+NAME                          USED  AVAIL  REFER  MOUNTPOINT
+muc1-ora_backup/backup_rman  12,7G   856G  12,7G  /zonedata/muc1-ora/root/backup_rman
+
+root@muc1-sun002-srv:~# zpool list muc1-ora_backup
+NAME             SIZE  ALLOC  FREE  CAP  DEDUP  HEALTH  ALTROOT
+muc1-ora_backup  976G   104G  872G  10%  1.00x  ONLINE  -

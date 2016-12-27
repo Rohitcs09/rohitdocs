@@ -1,0 +1,70 @@
+As discussed, 
+ 
+create the headlines like 
+ 
+- Introduction of SSL with Censhare 5.5
+describe about the new security feature, that certificates have to be trusted and why. Make clear that the customer has 3 options:
+ self signed, by a CA or ignore 
+- Generate own keystore 
+-- with self signed certificate (at the start, describe that the customer has to give the public certificate to every client and they have to trust this) 
+-- with CA reply by a CA 
+- import existing certificate chain to the keystore 
+- ignore untrusted SSL certificate by a client 
+ 
+Thanks 
+Andreas
+
+
+=======================================
+Table of Contents:
+
+1.  What is SSL and what are Certificates?
+2. Introduction of SSL with Censhare 5.5
+3. Features of SSL Certificate with Censhare 5.5
+ a) Encrypts information
+ b) Authentication - improves customers' trust
+ c) Better search engine rankings
+ d) Decrease in phishing scams:
+4. Three ways of using SSL Certificate with KeyStore Explorer 5.2
+ a) With self signed certificate 
+ b) With CA reply by a CA
+ c) Ignore Untrusted SSL Certificate by a client
+ d) Import existing certificate chain to the keystore 
+
+====================== 
+
+1. SSL (Secure Sockets Layer) is a standard security technology for establishing an encrypted link between a 
+ censhare server and a censhare client  SSL allows sensitive informations
+ and login credentials to be transmitted securely. Normally, data sent between censhare clients and censhare servers is sent in 
+ plain text—leaving you vulnerable to eavesdropping. If an attacker is able to intercept all data being sent 
+ between a Censhare client and a censhare server they can see and use that information.
+ 
+ 2. Features:
+ a) Encrypts information
+  SSL certificate ensures the Assets of censhare you send online are read by only the intended recipient and none else. 
+  In this process, the Censhare data traverse multiple servers or computers  before they reach the recipient. On the way, the data
+  could be accessed by unauthorized third parties. However, SSL makes some changes in the original
+  data so that the data cannot be read by the third parties.
+  
+ b) Authentication - improves customers' trust
+ Having SSL certificate ensures authentication. By authentication, we mean interpreting the sent data to the target
+ server and not to unauthorized third parties. This is important because,
+ as we have said, the data travels across multiple computers and can be accessed by unintended third parties.
+ 
+ c) Better search engine rankings
+Google recently added having a SSL certificate as one of the ranking parameters for search results. 
+Having a SSL certificate brings your site a competitive advantage in Google's search engine results pages (SERPs).
+
+d) Decrease in phishing scams: 
+As an enterprise, the last thing you want is for cyberattackers to masquerade as your business in order to 
+get personal data from unsuspecting customers.These days, phishing represents perhaps the single biggest 
+threat to Web transactions.
+ 
+ ===========================
+ 4.b) With CA Reply by a CA
+ 
+ 1. We can a create a CA signed certificate from the Keystore explorer  
+ 2. Generate the CA Signed certificate
+ 
+ 
+ 

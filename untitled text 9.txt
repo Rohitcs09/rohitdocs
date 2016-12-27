@@ -1,0 +1,28 @@
+
+ for i in de-nue-dev-ci-04 de-nue-prod-erp01app de-nue-prod-erp01db \
+ de-nue-prod-erp02db in de-nue-test40-css01 de-nue-test41-css01 \
+ de-nue-test41-css02 de-nue-test42-css01 de-nue-test42-css02 de-nue-test43-css01 \
+  de-nue-test43-css02 de-nue-test44-css01 de-nue-test44-css02 de-nue-test44-css03 \ 
+   de-nue-test45-css01 de-nue-test46-css01 de-nue-test47-css01 \ 
+   de-nue-test47-css02 de-nue-test50-css01 de-nue-test50-css01 \
+   de-nue-test51-css01 \
+    de-nue-test51-css02; do sed -i "s/de-nue-zone-01/localhost/g" "/root/3rd-party/etc/zfssnapbak/"$i".rc" ;done
+    
+    
+    
+     for i in de-nue-dev-ci-04 de-nue-prod-erp01app de-nue-prod-erp01db \
+ de-nue-prod-erp02db in de-nue-test40-css01 de-nue-test41-css01 \
+ de-nue-test41-css02 de-nue-test42-css01 de-nue-test42-css02 de-nue-test43-css01 \
+  de-nue-test43-css02 de-nue-test44-css01 de-nue-test44-css02 de-nue-test44-css03 \ 
+   de-nue-test45-css01 de-nue-test46-css01 de-nue-test47-css01 \ 
+   de-nue-test47-css02 de-nue-test50-css01 de-nue-test50-css01 \
+   de-nue-test51-css01 \
+    de-nue-test51-css02; do sed -i "s/de-nue-zone-01/localhost/g" "/root/3rd-party/etc/zfssnapbak/"$i".rc" ;done
+    
+    
+     for i in de-nue-dev-ci-04 de-nue-prod-erp01app de-nue-prod-erp01db de-nue-prod-erp02db in de-nue-test40-css01 de-nue-test41-css01 de-nue-test41-css02 de-nue-test42-css01 de-nue-test42-css02 de-nue-test43-css01 de-nue-test43-css02 de-nue-test44-css01 de-nue-test44-css02 de-nue-test44-css03 de-nue-test45-css01 de-nue-test46-css01 de-nue-test47-css01 de-nue-test47-css02 de-nue-test50-css01 de-nue-test50-css01 de-nue-test51-css01 de-nue-test51-css02 ; do sed -i "s/localhost/de-nue-zone-01/g" "/root/3rd-party/etc/zfssnapbak/"$i".rc" ;done
+     
+     
+     
+     
+     or i de-nue-dev-ci-04 de-nue-prod-erp01app de-nue-prod-erp01db de-nue-prod-erp02db in de-nue-test40-css01 de-nue-test41-css01 de-nue-test41-css02 de-nue-test42-css01 de-nue-test42-css02 de-nue-test43-css01 de-nue-test43-css02 de-nue-test44-css01 de-nue-test44-css02 de-nue-test44-css03 de-nue-test45-css01 de-nue-test46-css01 de-nue-test47-css01 de-nue-test47-css02 de-nue-test50-css01 de-nue-test50-css01 de-nue-test51-css01 de-nue-test51-css02 ; do zpool import $i"_backup";done

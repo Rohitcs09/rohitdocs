@@ -1,0 +1,126 @@
+Censhare Update-------
+
+First CSS_ID should be master 
+
+check --->   echo $CSS_ID
+
+step 1. Update to 5.2 - before you start.
+https://ecosphere.censhare.com/en/documentation/operation/update/article/2448512
+
+
+
+1. connect to james and mount files folder through go to server
+2. should be run on our own mac
+
+csFiles=/Volumes/ftp.censhare.de  ----> dont run this command
+
+
+After run the script then download the censhare server.............
+
+
+step 2..
+
+if we need to update censhare so do not need to update jetty / java / image tools
+
+we need to prepare censhare server
+
+Prepare
+Prepare censhare-Server
+check if all needed links exist
+
+
+step 3.......>
+
+
+changes we can see in the script --->
+
+
+Check what actually was changed from the current to the new version for files that has been customized.
+
+( customized files of censhare cscs and ncscs )
+
+{ # what has changed from current to new version
+cd ~/cscs/app && for i in $(find services/ config/ -type f ! -name "*save*" | sed "s/\..*\./\./g" | sed "s/-[0-9]*-[0-9]*-[0-9]//g" | sort | uniq)
+do diff -bc ~/ncss/app/$i ~/css/app/$i
+done
+}
+
+
+
+Now changes the the server means custiomizing file----------ncscs
+
+path is : 
+
+corpus@itind-kur-partner-vm:~/ncscs/app/services/filesystem> vim config.servertest.xml
+corpus@itind-kur-partner-vm:~/ncscs/app/services/filesystem> pwd
+/opt/corpus/ncscs/app/services/filesystem
+
+
+
+1. change version only -->  version=3
+
+ 2 <filesystems xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="filesystems.xsd" 
+ enabled="true" max-invocations="-1" replication-use="use-ma    ster" version="3" xmlns:corpus="http://www.censhare.com/xml/3.0.0/corpus" 
+ xmlns:new-val="http://www.censhare.com/xml/3.0.0/new-val" xmlns:new-fct="http://www.censhare.com/xml    /3.0.0/new-fct">
+ 
+ 
+2. put the line 27 below the 26 (means below the error line..)
+
+ 26   <filesystem name="error" usage="error" type="plain" url="file:work/error/" protocol="default" external-sync="false"/>
+ 27   <filesystem name="logs" usage="logs" type="plain" url="file:work/logs/" protocol="default"/>
+ 
+ 
+ 3. In the last time put the "runtime-web" instead of live
+ 
+ 
+ After that we need to compare..........
+ 
+ ncss ( config.xml)   path is ( /opt/corpus/ncss/app/services/filesystem/config.xml)           ---				ncscs  ( config.servertest.xml ) ( asst2 we need changes again after comparing)
+ 																													( /opt/corpus/ncscs/app/services/filesystem/servertest.xml)
+
+Step 4:--
+
+Do not need to configure again censhare - webclient
+
+Step 5:--
+
+Do the Update
+
+start maintenance window and shutdown all services
+
+Check for currently logged in users if you like
+
+#csscheck-cl
+
+Step 6:--
+
+Activate the new censhare-Server Version
+Switch links
+Scripts
+
+Step 7:--
+
+before 
+brew install coreutils
+brew link coreutils
+
+update database:
+
+/Volumes/Files/censhare/censhare-DB-Updates/updatedb.sh
+
+Step 8-->
+censhare.rc start
+
+Step 9:--
+
+Check the details of censhare versions and all
+
+cssinfo.sh
+
+
+
+
+ 
+ 
+ 
+ 

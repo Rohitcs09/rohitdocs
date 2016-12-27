@@ -1,0 +1,212 @@
+Zpool Backup Dedup 
+==============================
+
+Check the Dedup is on / off 
+
+#zfs get -r dedup ora-0132-sis-test_backup| /usr/gnu/bin/grep -v @
+
+====
+
+root@sn-zone-04:~# zfs get -r dedup ora-0132-sis-test_backup| /usr/gnu/bin/grep -v @
+NAME                                                                                                                      PROPERTY  VALUE  SOURCE
+ora-0132-sis-test_backup                                                                                                  dedup     off    default
+ora-0132-sis-test_backup/backup_rman                                                                                      dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool                                                                          dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016                                                   dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool                                             dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT                                        dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0                              dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0/var                          dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE                                    dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg                                dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg/repositories                   dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export                                      dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export/home                                 dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/install                                     dedup     on     received
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/oracle                                      dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool                                                                    dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT                                                               dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0                                                     dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0/var                                                 dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE                                                           dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg                                                       dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg/repositories                                          dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export                                                             dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export/home                                                        dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/install                                                            dedup     on     received
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/oracle                                                             dedup     off    default
+
+===============
+
+zpool import and set the property of dedup on then it will work dedup duplication in the future till the date of delete
+
+# root@sn-zone-04:~# zpool import ora-0132-sis-test_backup
+
+root@sn-zone-04:~# zfs set -r dedup=on ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+
+root@sn-zone-04:~# zfs get -r dedup ora-0132-sis-test_backup| /usr/gnu/bin/grep -v @
+
+
+
+NAME                                                                                                                      PROPERTY  VALUE  SOURCE
+ora-0132-sis-test_backup                                                                                                  dedup     off    default
+ora-0132-sis-test_backup/backup_rman                                                                                      dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool                                                                          dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016                                                   dedup     on     local
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool                                             dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT                                        dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0                              dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0/var                          dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE                                    dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg                                dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg/repositories                   dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export                                      dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export/home                                 dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/install                                     dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/oracle                                      dedup     on     inherited from ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool                                                                    dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT                                                               dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0                                                     dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0/var                                                 dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE                                                           dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg                                                       dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg/repositories                                          dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export                                                             dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export/home                                                        dedup     off    default
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/install                                                            dedup     on     received
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/oracle                                                             dedup     off    default
+
+============================
+
+then check the list of space of the given file system
+
+===========
+
+root@sn-zone-04:~# zfs list -rospace ora-0132-sis-test_backup
+
+
+NAME                                                                                                     AVAIL   USED  USEDSNAP  USEDDS  USEDREFRESERV  USEDCHILD
+ora-0132-sis-test_backup                                                                                 34.2M  19.7G         0     33K              0      19.7G
+ora-0132-sis-test_backup/backup_rman                                                                     34.2M   873M         0    873M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool                                                         34.2M  9.13G       17K     33K              0      9.13G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016                                  34.2M  9.61G       32K     33K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool                            34.2M  9.61G       34K     31K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT                       34.2M  3.91G       35K     31K              0      3.91G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0             34.2M  3.91G     37.5M   3.62G              0       267M
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0/var         34.2M   267M     34.8M    232M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE                   34.2M  1.42M       34K   1.26M              0       131K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg               34.2M   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg/repositories  34.2M    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export                     34.2M   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export/home                34.2M    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/install                    34.2M  6.51M       34K   6.47M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/oracle                     34.2M  5.69G      781M   4.92G              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool                                                   34.2M  9.13G       17K     31K              0      9.13G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT                                              34.2M  3.85G       17K     31K              0      3.85G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0                                    34.2M  3.85G     2.91M   3.62G              0       235M
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/ROOT/solaris-0/var                                34.2M   235M     3.15M    232M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE                                          34.2M  1.37M       17K   1.26M              0        97K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg                                      34.2M    97K       17K     32K              0        48K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/VARSHARE/pkg/repositories                         34.2M    48K       17K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export                                            34.2M    97K       17K     32K              0        48K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/export/home                                       34.2M    48K       17K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/install                                           34.2M  6.49M       17K   6.47M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool/rpool/oracle                                            34.2M  5.28G      361M   4.92G              0          0
+
+Then destroy old file system and take the backup again of that one file system which is dedup on.
+
+================
+
+root@sn-zone-04:~# zfs destroy -r ora-0132-sis-test_backup/ora-0132-sis-test_rpool
+
+=============
+
+root@sn-zone-04:~# zfs list -rospace ora-0132-sis-test_backup
+NAME                                                                                                     AVAIL   USED  USEDSNAP  USEDDS  USEDREFRESERV  USEDCHILD
+ora-0132-sis-test_backup                                                                                 9.17G  10.5G         0     32K              0      10.5G
+ora-0132-sis-test_backup/backup_rman                                                                     9.17G   873M         0    873M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016                                  9.17G  9.61G       32K     33K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool                            9.17G  9.61G       34K     31K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT                       9.17G  3.91G       35K     31K              0      3.91G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0             9.17G  3.91G     37.5M   3.62G              0       267M
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/ROOT/solaris-0/var         9.17G   267M     34.8M    232M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE                   9.17G  1.42M       34K   1.26M              0       131K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg               9.17G   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/VARSHARE/pkg/repositories  9.17G    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export                     9.17G   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/export/home                9.17G    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/install                    9.17G  6.51M       34K   6.47M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet-after-3-apr-2016/rpool/oracle                     9.17G  5.69G      781M   4.92G              0          0
+
+====================
+
+( This command is only change the name of the file system and this is not necessary because )
+
+root@sn-zone-04:~# zfs rename ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delet{,e}-after-3-apr-2016
+
+==========
+
+root@sn-zone-04:~# zfs list -rospace ora-0132-sis-test_backup
+NAME                                                                                                      AVAIL   USED  USEDSNAP  USEDDS  USEDREFRESERV  USEDCHILD
+ora-0132-sis-test_backup                                                                                  9.17G  10.5G         0     32K              0      10.5G
+ora-0132-sis-test_backup/backup_rman                                                                      9.17G   873M         0    873M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016                                  9.17G  9.61G       32K     33K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool                            9.17G  9.61G       34K     31K              0      9.61G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/ROOT                       9.17G  3.91G       35K     31K              0      3.91G
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/ROOT/solaris-0             9.17G  3.91G     37.5M   3.62G              0       267M
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/ROOT/solaris-0/var         9.17G   267M     34.8M    232M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/VARSHARE                   9.17G  1.42M       34K   1.26M              0       131K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/VARSHARE/pkg               9.17G   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/VARSHARE/pkg/repositories  9.17G    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/export                     9.17G   131K       34K     32K              0        65K
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/export/home                9.17G    65K       34K     31K              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/install                    9.17G  6.51M       34K   6.47M              0          0
+ora-0132-sis-test_backup/ora-0132-sis-test_rpool-delete-after-3-apr-2016/rpool/oracle                     9.17G  5.69G      781M   4.92G              0          0
+
+====================
+
+root@sn-zone-04:~# 3rd-party/bin/zfssnapbak.sh -f 3rd-party/etc/zfssnapbak/ora-0132-sis-test.rc
+### -----------------------------------------------------------------------
+### Start 'zfssnapbak' am '18.03.2016 (Fri), um 08:12:11'
+### -----------------------------------------------------------------------
+20160318-081211 zfssnapbak: running GLOBAL_PREACTION
+20160318-081215 zfssnapbak: Snapshots on src 'ora-0132-sis-test_rpool' exists but no filesystem on 'localhost', trying to sync all src snaps to dst.
+20160318-082122 zfssnapbak: Synced all src snaps to dst successfully
+20160318-082122 zfssnapbak: destroying old snapshots off 'ora-0132-sis-test_rpool' on localhost.
+20160318-082122 zfssnapbak: destroying old snapshots off 'ora-0132-sis-test_backup/ora-0132-sis-test_rpool' on 'localhost'.
+20160318-082125 zfssnapbak: running GLOBAL_POSTACTION
+### exit ec=successfully at '18.03.2016 (Fri), um 08:21:25' (time: 554s) Backup used: 97%.
+===================
+
+
+ we are going to update the size of pool ( After increase LUN size of the pool ) Because pool not updated automatically after increase the pool size
+So, It is necessary to update the pool size and check the size of the pool
+=============
+
+root@sn-zone-04:~# zpool list ora-0132-sis-test_backup
+NAME                      SIZE  ALLOC  FREE  CAP  DEDUP  HEALTH  ALTROOT
+ora-0132-sis-test_backup   20G  19.5G  499M  97%  2.00x  ONLINE  -
+
+root@sn-zone-04:~# zpool status ora-0132-sis-test_backup
+  pool: ora-0132-sis-test_backup
+ state: ONLINE
+status: The pool is formatted using an older on-disk format. The pool can
+        still be used, but some features are unavailable.
+action: Upgrade the pool using 'zpool upgrade'. Once this is done, the
+        pool will no longer be accessible on older software versions.
+  scan: none requested
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        ora-0132-sis-test_backup  ONLINE       0     0     0
+          c5t500A09818A4AF5F3d50  ONLINE       0     0     0
+
+errors: No known data errors
+
+root@sn-zone-04:~# zpool online -e ora-0132-sis-test_backup c5t500A09818A4AF5F3d50
+
+root@sn-zone-04:~# zpool list ora-0132-sis-test_backup
+NAME                       SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+ora-0132-sis-test_backup  25.1G  19.5G  5.61G  77%  2.00x  ONLINE  -
+
+Now we can see the pool size it’s increase then you can check the status of pool in the nagios. 
